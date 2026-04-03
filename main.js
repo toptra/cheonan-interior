@@ -236,7 +236,6 @@ function handleSubmit(e) {
 // ============================================
 function handleAdSubmit(e) {
   e.preventDefault();
-
   var form = e.target;
   var submitBtn = form.querySelector('button[type="submit"]');
   var name = form.querySelector('#ad-name').value;
@@ -248,23 +247,21 @@ function handleAdSubmit(e) {
   submitBtn.textContent = '전송 중...';
 
   var SHEET_URL = 'https://script.google.com/macros/s/AKfycbwMxMNgP2iyiXUeLLbuxZey_5lGgWgiwqFPtfNQomUqvBKtTQ3M3Ao3oLnrz7ip3A8R/exec';
-
   var params = '?name=' + encodeURIComponent(name) +
     '&phone=' + encodeURIComponent(phone) +
     '&company=' + encodeURIComponent(company) +
     '&message=' + encodeURIComponent(message);
 
-  fetch(SHEET_URL + params, {
-    method: 'GET',
-    mode: 'no-cors'
-  }).then(function() {
-    alert('입점 신청이 완료되었습니다!\n빠른 시일 내에 연락드리겠습니다.');
-    form.reset();
-    submitBtn.disabled = false;
-    submitBtn.textContent = '입점 신청하기';
-  }).catch(function() {
-    alert('전송 중 오류가 발생했습니다.\n전화로 문의해 주세요: 010-8672-3426');
-    submitBtn.disabled = false;
-    submitBtn.textContent = '입점 신청하기';
-  });
+  fetch(SHEET_URL + params, { method: 'GET', mode: 'no-cors' })
+    .then(function() {
+      alert('입점 신청이 완료되었습니다!\n빠른 시일 내에 연락드리겠습니다.');
+      form.reset();
+      submitBtn.disabled = false;
+      submitBtn.textContent = '입점 신청하기';
+    })
+    .catch(function() {
+      alert('전송 중 오류가 발생했습니다.\n전화로 문의해 주세요: 010-8672-3426');
+      submitBtn.disabled = false;
+      submitBtn.textContent = '입점 신청하기';
+    });
 }
