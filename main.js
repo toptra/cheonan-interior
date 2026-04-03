@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function startSlider() {
-    slideInterval = setInterval(nextSlide, 5000);
+    slideInterval = setInterval(nextSlide, 2000);
   }
 
   function resetSlider() {
@@ -229,4 +229,42 @@ function handleSubmit(e) {
 
   alert('상담 신청이 접수되었습니다. 빠른 시일 내에 연락드리겠습니다.');
   form.reset();
+}
+
+// ============================================
+// Ad inquiry form handler (Google Sheets 연동)
+// ============================================
+function handleAdSubmit(e) {
+  e.preventDefault();
+
+  var form = e.target;
+  var submitBtn = form.querySelector('button[type="submit"]');
+  var name = form.querySelector('#ad-name').value;
+  var phone = form.querySelector('#ad-phone').value;
+  var company = form.querySelector('#ad-company').value;
+  var message = form.querySelector('#ad-message').value;
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = '전송 중...';
+
+  var SHEET_URL = 'https://script.google.com/macros/s/AKfycbwMxMNgP2iyiXUeLLbuxZey_5lGgWgiwqFPtfNQomUqvBKtTQ3M3Ao3oLnrz7ip3A8R/exec';
+
+  var params = '?name=' + encodeURIComponent(name) +
+    '&phone=' + encodeURIComponent(phone) +
+    '&company=' + encodeURIComponent(company) +
+    '&message=' + encodeURIComponent(message);
+
+  fetch(SHEET_URL + params, {
+    method: 'GET',
+    mode: 'no-cors'
+  }).then(function() {
+    alert('입점 신청이 완료되었습니다!\n빠른 시일 내에 연락드리겠습니다.');
+    form.reset();
+    submitBtn.disabled = false;
+    submitBtn.textContent = '입점 신청하기';
+  }).catch(function() {
+    alert('전송 중 오류가 발생했습니다.\n전화로 문의해 주세요: 010-8672-3426');
+    submitBtn.disabled = false;
+    submitBtn.textContent = '입점 신청하기';
+  });
 }
