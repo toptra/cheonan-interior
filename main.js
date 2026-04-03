@@ -199,43 +199,11 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ============================================
-// Contact form handler
-// ============================================
-function handleSubmit(e) {
-  e.preventDefault();
-
-  var form = e.target;
-  var formData = {
-    name: form.querySelector('#name').value,
-    phone: form.querySelector('#phone').value,
-    type: form.querySelector('#type').value,
-    budget: form.querySelector('#budget').value,
-    message: form.querySelector('#message').value
-  };
-
-  // 무료버전: 간단한 알림 후 메일 전송 또는 외부 폼 연동
-  // 유료버전에서는 API 호출로 DB 저장
-  var subject = encodeURIComponent('[상담신청] ' + formData.name + ' 님 상담 요청');
-  var body = encodeURIComponent(
-    '이름: ' + formData.name + '\n' +
-    '연락처: ' + formData.phone + '\n' +
-    '인테리어 종류: ' + formData.type + '\n' +
-    '예상 예산: ' + formData.budget + '\n' +
-    '상담 내용: ' + formData.message
-  );
-
-  // mailto 방식 (무료버전 기본)
-  window.location.href = 'mailto:info@daewoonai.com?subject=' + subject + '&body=' + body;
-
-  alert('상담 신청이 접수되었습니다. 빠른 시일 내에 연락드리겠습니다.');
-  form.reset();
-}
-
-// ============================================
 // Ad inquiry form handler (Google Sheets 연동)
 // ============================================
 function handleAdSubmit(e) {
   e.preventDefault();
+
   var form = e.target;
   var submitBtn = form.querySelector('button[type="submit"]');
   var name = form.querySelector('#ad-name').value;
@@ -247,21 +215,23 @@ function handleAdSubmit(e) {
   submitBtn.textContent = '전송 중...';
 
   var SHEET_URL = 'https://script.google.com/macros/s/AKfycbwMxMNgP2iyiXUeLLbuxZey_5lGgWgiwqFPtfNQomUqvBKtTQ3M3Ao3oLnrz7ip3A8R/exec';
+
   var params = '?name=' + encodeURIComponent(name) +
     '&phone=' + encodeURIComponent(phone) +
     '&company=' + encodeURIComponent(company) +
     '&message=' + encodeURIComponent(message);
 
-  fetch(SHEET_URL + params, { method: 'GET', mode: 'no-cors' })
-    .then(function() {
-      alert('입점 신청이 완료되었습니다!\n빠른 시일 내에 연락드리겠습니다.');
-      form.reset();
-      submitBtn.disabled = false;
-      submitBtn.textContent = '입점 신청하기';
-    })
-    .catch(function() {
-      alert('전송 중 오류가 발생했습니다.\n전화로 문의해 주세요: 010-8672-3426');
-      submitBtn.disabled = false;
-      submitBtn.textContent = '입점 신청하기';
-    });
+  fetch(SHEET_URL + params, {
+    method: 'GET',
+    mode: 'no-cors'
+  }).then(function() {
+    alert('입점 신청이 완료되었습니다!\n빠른 시일 내에 연락드리겠습니다.');
+    form.reset();
+    submitBtn.disabled = false;
+    submitBtn.textContent = '입점 신청하기';
+  }).catch(function() {
+    alert('전송 중 오류가 발생했습니다.\n전화로 문의해 주세요: 010-8672-3426');
+    submitBtn.disabled = false;
+    submitBtn.textContent = '입점 신청하기';
+  });
 }
